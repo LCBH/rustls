@@ -3259,7 +3259,7 @@ mod test_quic {
         use rustls::internal::msgs::handshake::{
             ClientHelloPayload, HandshakeMessagePayload, KeyShareEntry, Random, SessionID,
         };
-        use rustls::internal::msgs::message::OpaqueMessage;
+        use rustls::internal::msgs::message::PlainMessage;
 
         let rng = ring::rand::SystemRandom::new();
         let mut random = [0; 32];
@@ -3294,7 +3294,9 @@ mod test_quic {
             }),
         };
 
-        let buf = OpaqueMessage::from(client_hello).encode();
+        let buf = PlainMessage::from(client_hello)
+            .into_unencrypted_opaque()
+            .encode();
         server
             .read_tls(&mut buf.as_slice())
             .unwrap();
@@ -3323,7 +3325,7 @@ mod test_quic {
         use rustls::internal::msgs::handshake::{
             ClientHelloPayload, HandshakeMessagePayload, KeyShareEntry, Random, SessionID,
         };
-        use rustls::internal::msgs::message::OpaqueMessage;
+        use rustls::internal::msgs::message::PlainMessage;
 
         let rng = ring::rand::SystemRandom::new();
         let mut random = [0; 32];
@@ -3361,7 +3363,9 @@ mod test_quic {
             }),
         };
 
-        let buf = OpaqueMessage::from(client_hello).encode();
+        let buf = PlainMessage::from(client_hello)
+            .into_unencrypted_opaque()
+            .encode();
         server
             .read_tls(&mut buf.as_slice())
             .unwrap();
@@ -3410,7 +3414,7 @@ fn test_client_does_not_offer_sha1() {
                 .write_tls(&mut buf.as_mut())
                 .unwrap();
             let msg = OpaqueMessage::read(&mut Reader::init(&buf[..sz])).unwrap();
-            let msg = Message::try_from(msg).unwrap();
+            let msg = Message::try_from(msg.into_plain_message()).unwrap();
             assert!(msg.is_handshake_type(HandshakeType::ClientHello));
 
             let client_hello = match msg.payload {
