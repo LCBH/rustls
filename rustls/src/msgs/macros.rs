@@ -9,7 +9,7 @@ macro_rules! enum_builder {
         EnumVal { $( $enum_var: ident => $enum_val: expr ),* }
     ) => {
         $(#[$comment])*
-        #[derive(Debug, PartialEq, Eq, Clone, Copy, serde::Deserialize, serde::Serialize)]
+        #[derive(Debug, PartialEq, Eq, Clone, Copy, serde::Deserialize, serde::Serialize, Hash)]
         pub enum $enum_name {
             $( $enum_var),*
             ,Unknown(u8)
@@ -48,7 +48,7 @@ macro_rules! enum_builder {
         EnumVal { $( $enum_var: ident => $enum_val: expr ),* }
     ) => {
         $(#[$comment])*
-        #[derive(Debug, PartialEq, Eq, Clone, Copy, serde::Deserialize, serde::Serialize)]
+        #[derive(Debug, PartialEq, Eq, Clone, Copy, serde::Deserialize, serde::Serialize, Hash)]
         pub enum $enum_name {
             $( $enum_var),*
             ,Unknown(u16)
